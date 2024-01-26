@@ -29,26 +29,6 @@
 .inputField {
   color: #000;
 }
-.submitButton {
-  width: 100%;
-  padding: 8px;
-  border-radius: 4px;
-  color: #000;
-  background-color: #95ca59;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 1rem;
-  margin: 1rem 0;
-  transition: background-color 0.3s ease-in-out;
-  border: 0.3cap solid;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.3);
-}
-
-.submitButton:hover {
-  transition: background-color 0.3s ease-in-out;
-  background-color: #fff;
-  color: #95ca59;
-}
 
 .textCenter {
   text-align: center;

@@ -1,14 +1,33 @@
-"use client";import InputField from "@/components/InputFields";import Link from "next/link";import { ChangeEventHandler, FormEventHandler, useState } from "react";import styles from "./signup-page.module.css";import Image from "next/image";
+"use client";import { ChangeEventHandler, FormEventHandler, useState } from "react";import styles from "./signup-page.module.css";import Image from "next/image";import signUpFormValidationRules from "./formValidation";import { styled } from "@mui/material/styles";import NorthSeattleLogo from "../../NorthSeattleLogo.png";import FirstNameField from "./FirstNameField";
 
-// TODO determine if this is the correct logo
-import NorthSeattleLogo from "../../NorthSeattleLogo.png";
-// Image by show password by Daniel T. from https://thenounproject.com/browse/icons/term/show-password/ Title = show password Icons used under CC BY 3.0
-// TODO: Replace with a different icon
-import passwordIcon from "../../showpassword.png";
-
+import {
+  Box,
+  Grid,
+  TextField,
+  Card,
+  CardContent,
+  Button,
+  Typography,
+} from "@mui/material"; 
 
 const SignUp = () => {
-  // Set initial state for password visibility
+
+  const Logo = styled("div")(({ theme }) => ({
+    padding: theme.spacing(1),
+    marginTop: theme.spacing(2),
+    display: "flex",
+    justifyContent: "center",
+  }));
+
+    const [firstName, setFirstName] = useState("");
+    const [firstNameError, setFirstNameError] = useState(false);
+    const handleFirstNameChange = (newFirstName: string) => {
+      setFirstName(newFirstName);
+    };
+    
+    const handleFirstNameError = (hasError: boolean) => {
+      setFirstNameError(hasError);
+    };
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -29,79 +48,15 @@ const SignUp = () => {
     confirmPassword: "",
   });
 
-  // Set initial state for errors
-  const [errors, setErrors] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
 
-  const { firstName, lastName, email, password, confirmPassword } = userInfo;
+  const { lastName, email, password, confirmPassword } = userInfo;
 
-  const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
-    const { name, value } = target;
-    setErrors({ ...errors, [name]: "" });
-    setUserInfo({ ...userInfo, [name]: value });
-  };
 
   // handle submit only fires when user clicks sign up
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
+
     e.preventDefault();
-    // Assume no errors initially
-    let newErrors = {
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    };
-
-    // Validate inputs before form submission
-    // TODO add more validation
-    if (!firstName) {
-      newErrors.firstName = "First name is required";
-    }
-    if (!lastName) {
-      newErrors.lastName = "Last name is required";
-    }
-    if (!email) {
-      newErrors.email = "Email is required";
-    }
-    if (!password) {
-      newErrors.password = "Password is required";
-    }
-    if (!confirmPassword) {
-      newErrors.confirmPassword = "Confirm password is required";
-    } else if (password.length < 10) {
-      newErrors.password = "Password must be at least 8 characters";
-    } else if (password.length > 20) {
-      newErrors.password = "Password must be less than 20 characters";
-    } else if (password.search(/[a-z]/i) < 0) {
-      newErrors.password = "Password must contain at least one letter";
-    } else if (password.search(/[0-9]/) < 0) {
-      newErrors.password = "Password must contain at least one digit";
-    } else if (password.search(/[!@#$%^&*]/) < 0) {
-      newErrors.password =
-        "Password must contain at least one special character";
-    }
-    if (confirmPassword !== password) {
-      newErrors.confirmPassword = "Passwords do not match";
-    }
-
-    // Update the state with the new errors
-    setErrors(newErrors);
-
-    // Check if there are any errors
-    const hasErrors = Object.values(newErrors).some(
-      (errorMsg) => errorMsg !== ""
-    );
-
-    // If there are errors, prevent form submission
-    if (hasErrors) {
-      return;
-    }
+    console.log("First Name:", firstName);
 
     // TODO: handle role better - probably need a different route for users vs admins
     const payload = {
@@ -142,85 +97,142 @@ const SignUp = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <form className={styles.formContainer} onSubmit={handleSubmit}>
-        <div className={styles.imageWrapper}>
-          <Image
-            src={NorthSeattleLogo}
-            alt="North Seattle College Logo"
-          />
-        </div>
-        <h1 className={styles.title}>Sign Up</h1>
-        <InputField
-          label="First Name"
-          type="text"
-          name="firstName"
-          value={userInfo.firstName}
-          onChange={handleChange}
-          error={errors.firstName}
-        />
-        <InputField
-          label="Last Name"
-          type="name"
-          name="lastName"
-          value={lastName}
-          onChange={handleChange}
-          error={errors.lastName}
-        />
-        <InputField
-          label="Email"
-          type="email"
-          name="email"
-          value={email}
-          onChange={handleChange}
-          error={errors.email}
-        />
-        <InputField
-          label="Password"
-          name="password"
-          value={password}
-          type={showPassword ? "text" : "password"}
-          onChange={handleChange}
-          error={errors.password}
-          togglePasswordVisibility={togglePasswordVisibility}
-          icon={
-            <Image
-              src={passwordIcon}
-              alt="Show Password"
-              color="white"
-              onClick={togglePasswordVisibility}
-              width={40}
-              height={40}
-              // TODO: Fix this
-              className="translate-x-3 translate-y-4"
-            />
-          }
-        />
-        <InputField
-          label="Confirm Password"
-          type={showConfirmPassword ? "text" : "password"}
-          name="confirmPassword"
-          value={confirmPassword}
-          onChange={handleChange}
-          error={errors.confirmPassword}
-          icon={
-            <Image
-              src={passwordIcon}
-              alt="Show Password"
-              color="white"
-              onClick={toggleConfirmPasswordVisibility}
-              width={40}
-              height={40}
-              // TODO: Fix this
-              className="translate-x-3 translate-y-4"
-            />
-          }
-        />
-        <button className={styles.submitButton} type="submit">
-          Sign Up
-        </button>
-      </form>
-    </div>
+    /* Outer container */
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        backgroundColor: styles.backgroundColor,
+        px: 4,
+      }}
+    >
+      {/* Inner container */}
+      <Grid
+        container
+        spacing={2}
+        component="main"
+        justifyContent="center"
+        alignItems="center"
+      >
+        {/* Middle element */}
+        <Grid item xs={12} sm={8} md={6} lg={4}>
+          <Card
+            elevation={8}
+            sx={{
+              minHeight: "100%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              width: "100%",
+              mt: 2,
+              mb: 2,
+            }}
+          >
+            <CardContent>
+              <Logo>
+                <Image
+                  src={NorthSeattleLogo}
+                  alt="North Seattle Logo"
+                  width={240}
+                  aria-label="North Seattle Logo"
+                />
+              </Logo>
+              <Box
+                component="form"
+                onSubmit={handleSubmit}
+                aria-label="Sign Up Form"
+                sx={{ width: "100%", mt: 1 }}
+              >
+                {/* TODO: Add error handling */}
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Grid item xs={12}>
+                      <Typography
+                        component="h1"
+                        variant="h3"
+                        sx={{ textAlign: "center", color: "#005aa7", m: 2 }}
+                      >
+                        Sign Up
+                      </Typography>
+                      <hr></hr>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          gap: 2,
+                        }}
+                      >
+                        <FirstNameField
+                          handleFirstNameChange={handleFirstNameChange}
+                          handleFirstNameError={handleFirstNameError}
+                        />
+                        <TextField
+                          fullWidth
+                          margin="normal"
+                          required
+                          id="lastName"
+                          label="Last Name"
+                          name="lastName"
+                          autoComplete="lastName"
+                          sx={{ flexGrow: 1 }}
+                        />
+                      </Box>
+                    </Grid>
+                    <Grid item xs={12} margin={1}>
+                      <TextField
+                        fullWidth
+                        margin="normal"
+                        required
+                        id="email"
+                        label="Email Address"
+                        name="email"
+                        autoComplete="email"
+                      />
+                      <TextField
+                        fullWidth
+                        margin="normal"
+                        required
+                        name="password"
+                        label="Password"
+                        type="password"
+                        id="password"
+                        autoComplete="current-password"
+                      />
+                      <TextField
+                        fullWidth
+                        margin="normal"
+                        required
+                        name="confirmPassword"
+                        label="Confirm Password"
+                        type="password"
+                        id="confirmPassword"
+                        autoComplete="current-password"
+                      />
+                      <Button
+                        type="submit"
+                        fullWidth
+                        style={{
+                          backgroundColor: "#005aa7",
+                          color: "#fff",
+                          fontWeight: "bold",
+                          fontSize: "1.2rem",
+                        }}
+                        sx={{ mt: 2, mb: 1 }}
+                      >
+                        Sign Up
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 
