@@ -18,7 +18,6 @@ import { useRouter } from "next/navigation";
 import AttendDialog from "@/components/AttendDialog";
 import ArchiveDialog from "@/components/ArchiveDialog";
 import EditDialog from "@/components/EditDialog";
-
 import { formatDate } from "@/utility/dateUtils";
 
 interface SearchParams {
